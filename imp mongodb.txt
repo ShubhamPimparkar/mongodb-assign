@@ -1,0 +1,93 @@
+
+String UTF 8 Error -
+
+db.book.find({},{},{enableUtf8Validation:true})
+
+
+<- ARRAY OPERATIONS ->
+-----------------------------------------------------
+
+# To set values in array -
+
+db.Pract1.updateMany({'subject.name':'physics'},{$set:{'subject.$.marks':85}})
+
+use $ for setting one value
+
+-----------------------------------------------------
+
+# To unset values of array -
+
+db.Pract1.updateMany({'subject.name':'physics'},{$unset:{'subject.$.marks':true}})
+
+to unset the key value pair from array use $unset and $
+
+----------------------------------------------------
+
+# To Push key:value pair in array -
+
+1> Insert One Element -
+
+db.Pract1.updateMany({'name':'Shubham'},{$push:{subject:{name:'Database',marks:40}}})
+
+
+Update Existing Element -
+
+db.book.updateMany({authors:'Magnus Rydin'},{$set:{'authors.$':'Fr'}})
+
+
+2> Insert Many Element -
+
+db.Pract1.updateMany({'name':'Shubham'},{$push:{subject:{$each:[{name:'HTML',marks:40},{name:'JS',marks:40}]}}})
+
+
+3> To Insert at Position -
+
+db.Pract1.updateMany({'name':'Shubham'},{$push:{subject:{$each:[47,41,74],$position:3}}})     ,  (-1 for last)
+
+db.Pract1.updateMany({'name':'Shubham'},{$push:{subject:{$each:[{name:'HTML',marks:40},{name:'JS',marks:40}],$position:3}}})
+
+----------------------------------------------------
+
+# Pop key:value in array -
+
+
+-> Removes last/First (1,-1) element in array ->
+
+db.Pract1.updateMany({'subject.name':'Database'},{$pop:{subject:1}})
+
+-----------------------------------------------------
+
+# Pull Particular key:value in array -
+
+db.Pract1.updateMany({'subject.name':'JS'},{$pull:{subject:{name:'JS'}}})
+
+
+---------------------------------------------------
+
+# Using $elemMatch -
+
+Used in Condition to find the values {first braces}
+
+db.Pract1.find({subject:{$elemMatch:{name:'SQL'}}})
+
+db.Pract1.find({subject:{$elemMatch:{name:'Database'}}})
+
+------------------------------------------------------
+
+# To Incerement all values in array - 
+
+db.stud.updateMany({name:'Shubham'},{$inc:{'marks.$[]':5}})
+
+----------------------------------------------------
+
+# ArrayFilters -
+
+db.students3.updateMany({},
+{$inc:{'grades.$[elem].grade':2}},
+{arrayFilters:[{'elem.std':{$eq:6}}]}
+)
+
+
+---------------------------------------------------------
+
+

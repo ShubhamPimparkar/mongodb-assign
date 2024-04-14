@@ -1,0 +1,269 @@
+select count(*),max(sal),deptno from emp where sal is not null group by deptno having deptno >10;
+
+we cannot use having without groupby clause
+
+we have to give same value in groupby as in select statement
+
+-------------------------------------
+String Funcs -
+
+upper,lower
+concat(name,sal)
+format(sal,2)
+substr(string,start,end)
+left(string,num of char)/right()
+
+length()
+lpad(str,total len, '-')/rpad()
+
+rtrim(str)/ltrim()
+
+instr('hello','el')
+reverse()
+
+replace(str,search str, new str)
+
+insert()
+
+repeat(str,count)
+
+--------------------------------------------
+Date Funcs -
+
+now()
+curdate()
+datediff(date1,date2) - gives diff in days
+
+select datediff(curdate(),'2004-03-01')/365; -> in Year
+
+date_format(curdate(),'%y/%m/%d')
+
+%m - numeric month
+%M - String month
+
+%y - 24
+%Y - 2024
+
+%d - 02
+%D - 2nd
+
+%b - Mar (first 3 letter)
+
+h- hour
+i -min
+p - am/pm
+
+date_add(date,interval nth unit)/date_sub()
+
+unit - day,month,year
+
+day()/month()/year() -> in numbers
+
+monthname()/dayname() -> string name
+
+last_day()
+
+
+str_to_date(date,format)
+--------------------------------------------------
+
+list all employees joined in either aug or may or dec
+
+select * from emp where date_format(hiredate,'%b') in ('aug','may','dec') ;
+
+----------------------------------------------
+First/Last DAY OF YEAR -
+
+select dayname(CONCAT(YEAR(curdate()),'-01-01')) DayName ;
+
+select dayname(CONCAT(YEAR(curdate()),'-12-31')) LastOfYear;
+
+--------------------------------------
+Foreign Key -
+
+create table student2(
+
+sid int primary key AUTO_INCREMENT,
+name varchar(20) not null,
+mark int check(mark between 0 and 100),
+address enum('pune','mumbai')
+)
+--------------------------------------
+
+create table std(
+---
+---
+---
+primary key (abc)
+)
+
+-----------------------------------
+
+ALTER TABLE Orders
+ADD CONSTRAINT FK_PersonOrder
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+
+------------------------------------
+
+
+select * from emp where deptno = (select deptno from emp where ename ='smith');
+
+-------------------------------------
+
+Nested Query -
+
+* we cannot use emp in update nested query .
+
+-> update emp set sal = (select sal from (select * from emp) e where e.ename = 'Jones') + 1000 where ename = 'Smith';
+
+-------------------------------------
+
+Copying Table - 
+
+create table empcpy as (select empno,ename from emp where deptno=10);
+
+* will only copy structure not the constraint.
+
+----------------------------------- 
+
+-> exists / not exists - use in nested query
+
+select * from team t where exits (select * from matchs m where m.winner =t.teamid);
+
+-----------------------------------
+
+
+temporary table ->
+
+create temporary table temp1(values);
+
+creates a temp table for 1 session
+
+---------------------------------
+
+JOINS ->
+
+1) Inner Join ->
+
+-equi join
+-non equi join
+-self join
+
+2) Outer Join ->
+
+-left Outer join
+-right outer join
+-full outer join
+
+3) Cross Join ->
+--------------------------------
+
+1.
+
+select e.empno,e.ename,d.deptno from emp e join dept d on e.deptno=d.deptno order by deptno;
+
+works with join/inner join and with ',' and where/on
+
+-------------------------------------
+
+case when <condition> then <'String'> when <cond> then 'Str' 
+
+else 'str' end
+
+-------------------------------------------
+
+VIEW -
+
+create view <viewname> as <select query>;
+
+-------------------------------------------
+
+PROCEDURES - 
+
+
+delimiter //
+create procedure pro1()
+begin
+<statements>
+end //
+
+
+Using cursors ->
+
+1.declare cursor
+2.declare handler to stop loops
+3.open cursor
+4.fetch the next row in cursor
+5.check if it last row then stop
+5.close cursor
+
+Ex-
+
+-------------------------------------
+delimiter //
+create procedure showAll()
+begin
+declare vfinish int default 0;
+declare pid,pdept,pmgr int;
+declare pname ,pjob varchar(20);
+declare psal float(9,2);
+declare pdate date;
+
+declare empcur cursor for select empno,ename,deptno,job,mgr,sal,hiredate from emp;
+declare EXIT handler for SQLEXCEPTION set vfinish = 1;
+open empcur;
+
+label1:loop
+	fetch empcur into pid,pname,pdept,pjob,pmgr,psal,pdate ;
+	if vfinish = 1 then
+		leave label1;
+	end if;
+
+select pid,pdept,pname,pjob,psal,pdate;
+
+
+end loop;
+close empcur;
+end //
+
+------------------------------
+IMPS - 
+
+1> There is no space in 'elseif'
+2> There is space between 'end if' and 'end loop'
+
+-------------------------------
+
+
+Functions -
+
+create function disDept(fname varchar(20)) returns int
+begin
+declare fdept int;
+select deptno into fdept from emp where ename=fname;
+return fdept;
+end //
+
+
+-------------------------------
+
+Triggers -(old/new)
+
+create trigger <trgname> before/after update/insert/delete on <tablename> for each row
+
+< insert statements>
+
+---------------------------------
+
+row_number()/rank()/dense_rank() over (partition by statement) 
+
+
+
+
+
+
+
+
+
+
+
