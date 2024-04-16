@@ -1,0 +1,203 @@
+db.restaurent.find({'grades.score':{$gt:80,$lt:100}})
+
+
+11.	Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and 
+their grade score more than 70 and latitude less than -65.754168.  
+
+
+cuisine:{$nin:{American}}
+
+'grade.score':{$gt:70}
+
+'address.coord.0':{$lt:-65.754168}
+
+{cuisine:{$nin:{American}},'grade.score':{$gt:70},'address.coord.0':{$lt:-65.754168}}
+
+db.restaurent.find({name:{{cuisine:{$nin:American}},'grade.score':{$gt:70},'address.coord.0':{$lt:-65.754168}}},{_id:0}})
+
+db.restaurent.find({name:{$elemMatch:{cuisine:{$neq:"American"},'grade.score':{$gt:70},'address.coord.0':{$lt:-65.754168}}}})
+
+ db.restaurent.find({name:{cuisine:{$neq:"American"},'grade.score':{$gt:70},'address.coord.0':{$lt:-65.754168}}})
+ 
+ 13.	Write a MongoDB query to find the restaurants which do not prepare any cuisine of 'American ' and achieved a grade
+ point 'A' not belongs to the borough Brooklyn. The document must be displayed according to the cuisine in descending order.  
+ 
+db.restaurent.find({cuisine:{$ne:"American"},'grades.grade':"A",borough:{$ne:"Brooklyn"}})
+
+14.	Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those 
+restaurants which contain 'Wil' as first three letters for its name.  
+
+db.restaurent.find({name:/^Wil/},{restaurant_id:1,name:1,borough:1,cuisine:1,_id:0}).limit(5)
+
+db.restaurent.find({name:/.*Reg.*/},{restaurant_id:1,name:1,borough:1,cuisine:1,_id:0}).limit(5)
+
+17.	Write a MongoDB query to find the restaurants which belong to the 
+borough Bronx and prepared either American or Chinese dish.  
+
+db.restaurent.find({borough:"Bronx",cuisine:{$in:["American","Chinese"]}},{restaurant_id:1,name:1,borough:1,cuisine:1,_id:0}).limit(5)
+
+18.	Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those
+ restaurants which belong to the borough Staten Island or Queens or Bronxor Brooklyn.  
+ 
+ db.restaurent.find({borough:{$nin:["Staten Island","Queens","Bronxor Brooklyn"]}},{restaurant_id:1,name:1,borough:1,cuisine:1,_id:0}).limit(5)
+ 
+20.	Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those
+restaurants which achieved a score which is not more than 10.  
+ 
+db.restaurent.find({'grades.score':{$lt:10}},{restaurant_id:1,name:1,borough:1,'grades.score':1,cuisine:1,_id:0}).limit(5)
+
+21.	Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepared dish except 
+'American' and 'Chinees' or restaurant's name begins with letter 'Wil'.  
+
+  
+db.restaurent.find({cuisine:{$nin:["American","Chinees"]},name:/^Wil/},{restaurant_id:1,name:1,borough:1,'grades.score':1,cuisine:1,_id:0}).limit(5)
+
+
+22.	Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an 
+ISODate "2014-08-11T00:00:00Z" among many of survey dates.
+
+
+db.restaurent.find({grades:{$elemMatch:{grade:'A',score:11,
+date:ISODate("2014-08-11T00:00:00Z")}}})
+
+db.restaurent.find({grades:{$elemMatch:{grade:'A',score:11,date:ISODate("2014-08-11T00:00:00Z")}}},{restaurant_id:1,name:1,borough:1,'grades.score':1,'grades.grade':1,cuisine:1,_id:0}).limit(5)
+
+
+23.	Write a MongoDB query to find the restaurant Id, name and grades for those restaurants where the 2nd element of grades 
+array contains a grade of "A" and score 9 on an ISODate "2014-08-11T00:00:00Z".  
+
+db.restaurent.find({grades:{$elemMatch:{date:ISODate("2014-08-11"),'grade.1':'A',score:9}}})
+
+
+db.restaurent.find({'grades.1':{$elemMatch:{grade:'A'}}})
+
+24.	Write a MongoDB query to find the restaurant Id, name, address and geographical location for those restaurants where 2nd 
+element of coord array contains a value which is more than 42 and upto 52 
+
+*******************************************
+db.restaurent.find({grades:{$elemMatch:{date:ISODate("2014-08-11"),'grade.1':'A',score:9}}})
+
+******************************************* 
+
+25.	Write a MongoDB query to arrange the name of the restaurants in ascending order along with all the columns.  
+
+db.restaurent.find({},{restaurant_id:1,name:1,borough:1,'grades.score':1,'grades.grade':1,cuisine:1,_id:0}).sort({cuisine:1,borough:-1})
+
+
+28.	Write a MongoDB query to know whether all the addresses contains the street or not.  
+
+
+
+db.restaurent.find({street:{$nin:[null],$exists:true}},{restaurant_id:1,name:1,borough:1,'grades.score':1,'grades.grade':1,cuisine:1,_id:0})
+
+rating:{$in:[null],$exists:true}
+
+db.restaurent.find({street:{$nin:[null],$exists:true}})
+
+
+29.	Write a MongoDB query which will select all documents in the restaurants collection where the coord field value is Double.  
+
+db.restaurent.find({'grades.grade':{$mod:[2,1]}},{}).limit(5)
+
+30.	Write a MongoDB query which will select the restaurant Id, name and grades for those restaurants 
+which returns 0 as a remainder after dividing the score by 7.  
+
+
+db.restaurent.find({'grades.grade':{$mod:[2,1]}},{restaurant_id:1,name:1,borough:1,'grades.score':1,'grades.grade':1,cuisine:1,_id:0}).limit(5)
+
+
+1.	Find all books whose  author is Faisal Abid and display name of book authors and categories 
+
+db.book.find({'authors':'Faisal Abid'},{title:1,authors:1})
+
+db.book.find({'status:'undergoing  change'},{title:1,authors:1,status:1,categories:1})
+
+db.book.find({status:'PUBLISH'},{title:1,authors:1,status:1,categories:1})
+
+
+3.	Change the status of books “undergoing  change” for books having more than 500 pages and published in 2009 
+
+db.book.find({pageCount:{$gt:500},{$expr:{$eq:[{$year:'$publishedDate'},2009]}}},{$set:{status:'undergoing change'}})
+
+db.movie.find({$expr:{$eq:[{$year:'$rdate'},2019]}})
+
+$expr:{$eq:[{$year:'publishedDate'},2009]}
+
+ db.book.find({pageCount:{$gt:500},$expr:{$eq:[{$year:'$publishedDate'},2009]}},{$set:{status:'undergoing change'}})
+ 
+4.	Find all the books containing word highlighting and depth in long description of the book 
+
+longDescription:/.*highlighting.*/
+longDescription:/.*depth.*/
+
+db.book.find({longDescription:/.*highlighting.*/,longDescription:/.*depth.*/},{name:1})
+
+db.book.find({pageCount:{$gt:500},{$expr:{$eq:[{$year:'$publishedDate'},2009]}}},{title:1,publishedDate:1})
+
+db.movie.find({$expr:{$eq:[{$year:'$rdate'},2019]}})
+
+6.	Find all books with pageCount is either 500 or 556 or 670 
+
+db.moive.find({pageCount:{$in:[500,556,670]}},{title:1,categories:1,status:1,_id:0})
+
+7.	Add 2 categories “kindle” and “hard bind” in all the books if its pageCount >200 and < 500 or number of pages >500 
+
+
+
+db.book.updateMany({pageCount:{$gt:200,$lt:500}},{$push:{categories:{$each:['kindle','hard bind']}}})
+
+
+thumbnailUrl:{$nin:[null],$exits:true}
+
+db.book.find({thumbnailUrl:{$nin:[null]}})
+
+db.book.find({thumbnailUrl:{$nin:[null]}},{title:1,pageCount:1,thumbnailUrl:1},{enableUtf8Validation:true})
+
+db.Pract1.insertMany([{id:3,name:'Rahul',subject:[56,20,70,30],stream:'Comm'},{id:4,name:'Pinky',subject:[67,23,80,27],stream:'science'}])
+
+db.Pract1.insertMany([{id:3,name:'Rahul',subject:[56,20,70,30],stream:'Comm'}])  
+
+
+db.Pract1.insertMany([{id:6,name:'Sujal',subject:[{name:'physics',marks:80},{name:'chemistry',marks:87},{name:'maths',marks:88}],stream:'Science'}])  
+
+db.Pract1.updateMany({'name':'Shubham'},{subject:{$push:[{name:'Database',marks:40},{name:'C++',marks:40}]}})
+
+db.Pract1.updateMany({'name':'Shubham'},{$push:{subject:{[{name:'Database',marks:40},{name:'C++',marks:40}]}}})
+
+
+9. Add key type with values [“fiction”,”moral stories”,”adventurous”] in all
+books whose title starts with Fl and contains a some where in the name 
+ 
+db.book.updateMany({title:/^Fl.*a.*$/},{$set:{type:['Fiction','moral stories','adventurous']}},{upsert:true})
+
+10.	Add a key comments :[{comment:” like the book” ,date:ISODate(“2019-09-01”)}, 
+
+db.book.updateMany({title:/^Fl.*a.*$/},{$set:{comment:[{comments:'i like this book',date:ISODate('2023-09-23')}]}},{upsert:true})
+
+11.	Add new author “myauthor” at position 2 for all books whose title starts with h or m and 
+contains s at 2nd last position  
+
+
+db.book.updateMany({title:/^H|^M.*s.$/},{$push:{authors:{$each:['Rohan','Shubham','Harshal'],$position:-2}}})
+ 
+
+ db.book.find({title:/^H|^M.*s.$/})
+ 
+ 12.	Increase pageCount by 100 for all books whose author at 1 st position is “Gal Shachor” 
+ 
+ db.book.updateMany({'authors.0':'Gal Shachor'},{$inc:{pageCount:100}})
+ 
+  db.book.find({'authors.0':'Gal Shachor'})
+  
+  13.	Overwrite “Magnus Rydin" with name “Fr” 
+  
+  db.book.find({authors:'Magnus Rydin'})
+  
+    
+  db.book.updateMany({authors:'Magnus Rydin'},{$set:{'authors.$':'Fr'}})
+  
+  
+  14.	List all books title, status, pageCount, comments for all books with pages > 300
+  or < 500 or title starts with a or isbn starts with 193 
+  
+  
